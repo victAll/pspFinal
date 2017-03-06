@@ -38,12 +38,15 @@ public class ServidorChat extends JFrame implements ActionListener {
     public static JTextArea areaTexto;
     private JButton boton = new JButton("ENVIAR");
     private JButton salir = new JButton("SALIR");
+    private JButton enviar = new JButton("ENVIAR MENSAJE");
+
     public static Socket[] tabla = new Socket[10];
     //para mandar mensajes
     public Socket socketServidor = null;
     private DataInputStream fentrada;
     private DataOutputStream fsalida;
     Boolean repetir = true;
+    MulticastServidor multicastServidor = new MulticastServidor();
 
     public ServidorChat() {
         super("VENTANA DEL SERVIDOR DEL CHAT");
@@ -66,6 +69,9 @@ public class ServidorChat extends JFrame implements ActionListener {
         salir.setBounds(420, 50, 100, 30);
         salir.addActionListener(this);
         add(salir);
+        enviar.setBounds(420, 90, 100, 30);
+        enviar.addActionListener(this);
+        add(enviar);
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         //pruebaas remoto
 //        RMICalculadoraServidor cs = new RMICalculadoraServidor();
@@ -81,14 +87,20 @@ public class ServidorChat extends JFrame implements ActionListener {
                 fsalida.writeUTF(texto);
                 fsalida.writeUTF("*");
                 repetir = false;
+
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
         }
+        if (e.getSource() == enviar) {
+
+            multicastServidor.envioMulticast(mensajeSedes);
+
+        }
         if (e.getSource() == salir) {
             try {
                 servidor.close();
-                ;
+
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
@@ -131,7 +143,6 @@ public class ServidorChat extends JFrame implements ActionListener {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        
-        
+
     }
 }

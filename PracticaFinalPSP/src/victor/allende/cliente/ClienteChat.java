@@ -12,8 +12,13 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.MulticastSocket;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -37,6 +42,7 @@ public class ClienteChat extends JFrame implements ActionListener {
     static JTextArea areatexto;
     JButton boton = new JButton("ENVIAR");
     JButton desconectar = new JButton("SALIR");
+    JButton enviarObjeto = new JButton("Enviar a central");
     Boolean repetir = true;
 
     public ClienteChat(Socket s, String nombre) {
@@ -54,7 +60,11 @@ public class ClienteChat extends JFrame implements ActionListener {
         desconectar.setBounds(420, 50, 100, 30);
         desconectar.addActionListener(this);
         add(desconectar);
+        enviarObjeto.setBounds(420, 90, 100, 30);
+        enviarObjeto.addActionListener(this);
+        add(enviarObjeto);
         areatexto.setEditable(false);
+
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         conector = s;
         this.nombre = nombre;
@@ -70,10 +80,8 @@ public class ClienteChat extends JFrame implements ActionListener {
 
     public ClienteChat() {
     }
-    
-    
 
-    public  void escrituraObjetoCuenta() {
+    public void escrituraObjetoCuenta() {
 
         int numeropuerto = 6000;
         // PREPARACION DEL OBJETO Y ENVIO
@@ -82,12 +90,12 @@ public class ClienteChat extends JFrame implements ActionListener {
         Date fecha = new Date();
         int cantidadTotal;
         String cadenaFecha;
-        
+
         cuenta.setNombreSede(nombre);
         SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
         cadenaFecha = formato.format(fecha);
         cuenta.setFecha(cadenaFecha);
-        cantidadTotal = (int) (Math.random() *(20000-200+1)+200);
+        cantidadTotal = (int) (Math.random() * (20000 - 200 + 1) + 200);
         cuenta.setCantidadTotal(cantidadTotal);
         System.out.println("aqui");
         try {
@@ -97,17 +105,15 @@ public class ClienteChat extends JFrame implements ActionListener {
             Socket cliente = servidor.accept();
             ObjectOutputStream escrituraObjeto = new ObjectOutputStream(cliente.getOutputStream());
             escrituraObjeto.writeObject(cuenta);
-            
+
             Encriptador encriptador = new Encriptador();
             encriptador.encriptar(escrituraObjeto);
-            
+
             ObjectInputStream lecturaObjetos = new ObjectInputStream(cliente.getInputStream());
             Cuenta cuentaRecibida = (Cuenta) lecturaObjetos.readObject();
-            
-           
+
             System.out.println(cuenta.getNombreSede());
-            
-            
+
             lecturaObjetos.close();
             escrituraObjeto.close();
             cliente.close();
@@ -117,10 +123,6 @@ public class ClienteChat extends JFrame implements ActionListener {
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(ClienteChat.class.getName()).log(Level.SEVERE, null, ex);
         }
-            
-
-              
-            
 
     }
 
@@ -131,10 +133,15 @@ public class ClienteChat extends JFrame implements ActionListener {
             mensaje.setText(" ");
             try {
                 fsalida.writeUTF(texto);
-                escrituraObjetoCuenta();
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
+        }
+
+        if (e.getSource() == enviarObjeto) {
+
+            escrituraObjetoCuenta();
+
         }
         if (e.getSource() == desconectar) {
             String texto = " <<< ABANDONA EL CHAT " + nombre;
@@ -149,7 +156,7 @@ public class ClienteChat extends JFrame implements ActionListener {
     }
 
     public void ejecutar() {
-                System.out.println("aqui");
+        System.out.println("ejecutar");
 
         String texto = "";
         while (repetir) {
@@ -172,8 +179,67 @@ public class ClienteChat extends JFrame implements ActionListener {
         }
     }
 
-    public static void main(String[] args) {
+//    public void recibirMulticast() {
+//
+//        int puerto = 12345;
+//        try {
+//            
+//            InetAddress grupo = InetAddress.getLocalHost();
+//            MulticastSocket smulti = new MulticastSocket(puerto);
+//// NOS VAMOS A UNIR AL GRUPO DE ORDENADORES
+//            smulti.joinGroup(grupo);
+//            String mensaje = "";
+//            byte[] buf = new byte[1000];
+//            while (!mensaje.trim().equals("*")) {
+//// SE RECIBE EL PAQUETE DEL SERVIDOR MULTICAST
+//                DatagramPacket paquete = new DatagramPacket(buf, buf.length);
+//                smulti.receive(paquete);
+//                mensaje = new String(paquete.getData());
+//                System.out.println("SE HA RECIBIDO DEL SERVIDOR MULTICAST EL MENSAJE " + mensaje.trim());
+//                areatexto.setText(mensaje);
+//                System.out.println(mensaje);
+//           }
+//// ABANDONAMOS EL GRUPO DE ORDENADORES
+//            smulti.leaveGroup(grupo);
+//            smulti.close();
+//            System.out.println("SE HA CERRADO EL SOCKET MULTICAST");
+//        } catch (IOException e) {
+//// TODO Auto-generated catch block
+//            e.printStackTrace();
+//        }
+//    }
+    public void recibirMulticast() {
+        byte[] bufer = new byte[1024];
+        int puerto = 12345;
+        try {
+            DatagramSocket socket = new DatagramSocket(puerto);
+            System.out.println("ESPERANDO DATAGRAMA DESDE EL CLIENTE");
+            DatagramPacket recibo = new DatagramPacket(bufer, bufer.length);
+            try {
+                socket.receive(recibo);
+                int byterecibidos = recibo.getLength();
+                String mensaje = new String(recibo.getData());
+                
+               areatexto.append("mensaje desde la central"+mensaje);
+                
+                
+                System.out.println("NUMERO DE BYTE RECIBIDOS : " + byterecibidos);
+                System.out.println("CONTENIDO DEL PAQUETE : " + mensaje.trim());
+                System.out.println("PUERTO ORIGEN DEL MENSAJE : " + recibo.getPort());
+                System.out.println("IP ORIGEN : " + recibo.getAddress().getHostAddress());
+                System.out.println("PUERTO DESTINO DEL MENSAJE : " + socket.getLocalPort());
+                socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
 
+    }
+
+    public static void main(String[] args) {
+        
         int puerto = 44444;
         String nombre = JOptionPane.showInputDialog("INTRODUZCA TU NOMBRE O NICK");
         Socket s = null;
@@ -192,15 +258,13 @@ public class ClienteChat extends JFrame implements ActionListener {
             cliente.setBounds(0, 0, 540, 400);
             cliente.setVisible(true);
             cliente.ejecutar();
-            
-            
-//            ClienteChat cc = new ClienteChat();
-//            cc.escrituraObjetoCuenta();
+            cliente.recibirMulticast();
+            //cc.escrituraObjetoCuenta();
+
         } else {
             System.out.println("EL NOMBRE ESTA VACIO");
         }
-         ClienteChat cc = new ClienteChat();
-         cc.escrituraObjetoCuenta();
+        
 
     }
 }

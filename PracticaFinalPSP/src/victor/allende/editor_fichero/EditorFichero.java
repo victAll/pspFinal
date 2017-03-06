@@ -36,9 +36,9 @@ public class EditorFichero {
 
             escritor = new FileWriter(archivo, true);
 
-            escritor.write("Nombe sede: "+cuenta.getNombreSede()+"\r\n ");
-            escritor.write("fecha: "+cuenta.getFecha()+"\r\n ");
-            escritor.write("Cantidad total: "+String.valueOf(cuenta.getCantidadTotal())+"\r\n ");
+            escritor.write("Nombre sede: "+cuenta.getNombreSede()+"\r\n");
+            escritor.write("fecha: "+cuenta.getFecha()+"\r\n");
+            escritor.write("Cantidad total: "+String.valueOf(cuenta.getCantidadTotal())+" €\r\n");
 
         } catch (IOException ex) {
             Logger.getLogger(EditorFichero.class.getName()).log(Level.SEVERE, null, ex);
