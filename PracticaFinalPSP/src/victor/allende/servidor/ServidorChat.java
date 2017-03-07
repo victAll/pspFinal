@@ -17,7 +17,6 @@ import java.net.SocketException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
-import victor.allende.cliente.SedeBarcelona;
 import victor.allende.hilo_servidor.HiloServidor;
 
 /**
@@ -122,7 +121,6 @@ public class ServidorChat extends JFrame implements ActionListener {
                 CONEXIONES++;
                 ACTUALES++;
                 HiloServidor hilo = new HiloServidor(s);
-                SedeBarcelona sedeb = new SedeBarcelona();
                 hilo.start();
 
             }

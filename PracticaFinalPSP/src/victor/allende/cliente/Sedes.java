@@ -12,8 +12,13 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.MulticastSocket;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -25,29 +30,25 @@ import javax.swing.*;
  *
  * @author allen
  */
-public class SedeBarcelona extends JFrame implements ActionListener {
+public class Sedes extends JFrame implements ActionListener {
 
     private static final long serialVersionUID = 1L;
     Socket conector = null;
     DataInputStream fentrada;
     DataOutputStream fsalida;
-    String nombre;
+    static String nombre;
     static JTextField mensaje = new JTextField();
     private JScrollPane scrollpane;
     static JTextArea areatexto;
     JButton boton = new JButton("ENVIAR");
     JButton desconectar = new JButton("SALIR");
     JButton enviarObjeto = new JButton("CENTRAL");
-        HiloCliente h;
+    Boolean repetir = true;
+    String comprobar = "";
+    HiloCliente h;
     boolean primer = true;
 
-    Boolean repetir = true;
-
-    public SedeBarcelona() {
-    }
-
-    public SedeBarcelona(Socket s, String nombre) {
-
+    public Sedes(Socket s, String nombre) {
         super("CONEXION DEL CLIENTE DEL CHAT: " + nombre);
         setLayout(null);
         mensaje.setBounds(10, 10, 400, 30);
@@ -66,6 +67,7 @@ public class SedeBarcelona extends JFrame implements ActionListener {
         enviarObjeto.addActionListener(this);
         add(enviarObjeto);
         areatexto.setEditable(false);
+
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         conector = s;
         this.nombre = nombre;
@@ -73,11 +75,15 @@ public class SedeBarcelona extends JFrame implements ActionListener {
             fentrada = new DataInputStream(conector.getInputStream());
             fsalida = new DataOutputStream(conector.getOutputStream());
 //            String texto = "SE ENTRA EN EL CHAT ----";
-            String texto = "";
-            fsalida.writeUTF(texto);
+//            fsalida.writeUTF(texto);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+    }
+
+    public Sedes() {
     }
 
     public void escrituraObjetoCuenta() {
@@ -85,7 +91,6 @@ public class SedeBarcelona extends JFrame implements ActionListener {
         int numeropuerto = 6000;
         // PREPARACION DEL OBJETO Y ENVIO
         Cuenta cuenta = new Cuenta();
-        String nombre = "Sede Barcelona";
         Date fecha = new Date();
         int cantidadTotal;
         String cadenaFecha;
@@ -96,11 +101,11 @@ public class SedeBarcelona extends JFrame implements ActionListener {
         cuenta.setFecha(cadenaFecha);
         cantidadTotal = (int) (Math.random() * (20000 - 200 + 1) + 200);
         cuenta.setCantidadTotal(cantidadTotal);
-        System.out.println("aqui se llena el objeto");
+        System.out.println("aqui");
         try {
             ServerSocket servidor;
             servidor = new ServerSocket(numeropuerto);
-            System.out.println("ESPERANDO A LA CENTRAL FINNCIERA");
+            System.out.println("ESPERANDO A LA CENTRAL FINANCIERA");
             Socket cliente = servidor.accept();
             ObjectOutputStream escrituraObjeto = new ObjectOutputStream(cliente.getOutputStream());
             escrituraObjeto.writeObject(cuenta);
@@ -110,22 +115,26 @@ public class SedeBarcelona extends JFrame implements ActionListener {
 
             ObjectInputStream lecturaObjetos = new ObjectInputStream(cliente.getInputStream());
             Cuenta cuentaRecibida = (Cuenta) lecturaObjetos.readObject();
+
+            System.out.println(cuenta.getNombreSede());
+
             lecturaObjetos.close();
             escrituraObjeto.close();
             cliente.close();
             servidor.close();
         } catch (IOException ex) {
-            Logger.getLogger(SedeValencia.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Sede.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ClassNotFoundException ex) {
-            Logger.getLogger(SedeValencia.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Sede.class.getName()).log(Level.SEVERE, null, ex);
         }
+
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == boton) {
             String texto = nombre + " >> " + mensaje.getText();
-            mensaje.setText(" ");
+            mensaje.setText("");
             try {
                 fsalida.writeUTF(texto);
                 fsalida.flush();
@@ -133,6 +142,7 @@ public class SedeBarcelona extends JFrame implements ActionListener {
                 e1.printStackTrace();
             }
         }
+
         if (e.getSource() == enviarObjeto) {
 
             escrituraObjetoCuenta();
@@ -141,9 +151,11 @@ public class SedeBarcelona extends JFrame implements ActionListener {
         if (e.getSource() == desconectar) {
             String texto = " <<< ABANDONA EL CHAT " + nombre;
             try {
+
                 fsalida.writeUTF(texto);
                 fsalida.writeUTF("*");
                 repetir = false;
+
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
@@ -151,20 +163,22 @@ public class SedeBarcelona extends JFrame implements ActionListener {
     }
 
     public void ejecutar() {
-        String comprobar;
-        String texto = "";
+        System.out.println("ejecutar");
+        String texto;
         while (repetir) {
             comprobar = areatexto.getText();
-            System.out.println("comprobar: " + comprobar);
+            if (!comprobar.equalsIgnoreCase("")) {
+
+                System.out.println("comprobar: " + comprobar);
+            }
             try {
                 texto = fentrada.readUTF();
                 if (comprobar.equalsIgnoreCase("")) {
                     areatexto.setText(texto);
                 } else {
-                    areatexto.append(texto);
+                    areatexto.setText(texto);
                 }
                 prueba();
-
             } catch (IOException e) {
                 JOptionPane.showMessageDialog(null, "IMPOSIBLE CONECTAR CON EL SERVIDOR\n"
                         + e.getMessage(), "<< mensaje de error >>", JOptionPane.ERROR_MESSAGE);
@@ -172,15 +186,17 @@ public class SedeBarcelona extends JFrame implements ActionListener {
                 e.printStackTrace();
             }
         }
+
         try {
+
             conector.close();
             System.exit(0);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-    
-        public void prueba() {
+
+    public void prueba() {
         if (primer) {
             h = new HiloCliente(areatexto);
             h.start();
@@ -190,11 +206,11 @@ public class SedeBarcelona extends JFrame implements ActionListener {
             h.start();
         }
     }
-
+    
     public static void main(String[] args) {
-
         int puerto = 44444;
-        String nombre = "Barcelona";
+        nombre = JOptionPane.showInputDialog("INTRODUZCA TU NOMBRE O NICK");
+       
         Socket s = null;
         try {
             s = new Socket("localhost", puerto);
@@ -206,11 +222,13 @@ public class SedeBarcelona extends JFrame implements ActionListener {
             System.exit(0);
             e.printStackTrace();
         }
-        SedeBarcelona cliente = new SedeBarcelona(s, nombre);
-        cliente.setBounds(0, 0, 540, 400);
-        cliente.setVisible(true);
-        cliente.ejecutar();
-
-
-    }
+        if (!nombre.trim().equals("")) {
+            Sedes cliente = new Sedes(s, nombre);
+            cliente.setBounds(0, 0, 540, 400);
+            cliente.setVisible(true);
+            cliente.ejecutar();
+        } else {
+            System.out.println("EL NOMBRE ESTA VACIO");
+        }
+    } 
 }
