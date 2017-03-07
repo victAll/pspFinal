@@ -100,8 +100,8 @@ public class RMICalculadoraCliente extends JFrame implements ActionListener {
                 int total = ef.imprimirCantidad();
                 //llamada al metodo rmi
                 String m = calculadora.valorarVentas(total,_menor, _mayor);
-                JOptionPane.showMessageDialog(null, "La venta es:   " + informecantidad + " " + m);
-                JOptionPane.showMessageDialog(null, "La suma total es:   " + total);
+                JOptionPane.showMessageDialog(null, "La suma total es:   " + total + " " + m);
+                JOptionPane.showMessageDialog(null, "La venta es:   " + informecantidad);
 
             } catch (RemoteException e) {
                 e.printStackTrace();

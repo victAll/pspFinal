@@ -126,7 +126,7 @@ public class ServidorChat extends JFrame implements ActionListener {
             }
             if (!servidor.isClosed()) {
                 mensaje2.setForeground(Color.red);
-                mensaje2.setText("MAXIMO NUMERO DE CONEXIONES ESTABLECIDAD : " + CONEXIONES);
+                mensaje2.setText("MAXIMO NUMERO DE CONEXIONES ESTABLECIDAS : " + CONEXIONES);
                 servidor.close();
             }
         } catch (IOException e) {
