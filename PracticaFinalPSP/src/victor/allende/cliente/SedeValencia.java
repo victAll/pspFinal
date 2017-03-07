@@ -45,6 +45,8 @@ public class SedeValencia extends JFrame implements ActionListener {
     JButton enviarObjeto = new JButton("CENTRAL");
     Boolean repetir = true;
     String comprobar = "";
+    HiloCliente h;
+    boolean primer = true;
 
     public SedeValencia(Socket s, String nombre) {
         super("CONEXION DEL CLIENTE DEL CHAT: " + nombre);
@@ -134,7 +136,7 @@ public class SedeValencia extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == boton) {
             String texto = nombre + " >> " + mensaje.getText();
-            mensaje.setText(" ");
+            mensaje.setText("");
             try {
                 fsalida.writeUTF(texto);
                 fsalida.flush();
@@ -164,24 +166,21 @@ public class SedeValencia extends JFrame implements ActionListener {
 
     public void ejecutar() {
         System.out.println("ejecutar");
-
         String texto;
         while (repetir) {
             comprobar = areatexto.getText();
-            if(!comprobar.equalsIgnoreCase("")){
-            
+            if (!comprobar.equalsIgnoreCase("")) {
+
                 System.out.println("comprobar: " + comprobar);
-            }           
+            }
             try {
                 texto = fentrada.readUTF();
                 if (comprobar.equalsIgnoreCase("")) {
                     areatexto.setText(texto);
                 } else {
-                    areatexto.append(texto);
+                    areatexto.setText(texto);
                 }
-                HiloCliente h = new HiloCliente(areatexto);
-                h.start();
-
+                prueba();
             } catch (IOException e) {
                 JOptionPane.showMessageDialog(null, "IMPOSIBLE CONECTAR CON EL SERVIDOR\n"
                         + e.getMessage(), "<< mensaje de error >>", JOptionPane.ERROR_MESSAGE);
@@ -196,6 +195,17 @@ public class SedeValencia extends JFrame implements ActionListener {
             System.exit(0);
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    public void prueba() {
+        if (primer) {
+            h = new HiloCliente(areatexto);
+            h.start();
+            primer = false;
+        } else if (!h.isAlive()) {
+            h = new HiloCliente(areatexto);
+            h.start();
         }
     }
 

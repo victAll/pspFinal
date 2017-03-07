@@ -71,21 +71,10 @@ public class Encriptador {
             System.out.println("TEXTO DESCIFRADO");
             System.out.write(bufferClaro2);
 
-        } catch (NoSuchAlgorithmException ex) {
-            Logger.getLogger(Encriptador.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (NoSuchPaddingException ex) {
-            Logger.getLogger(Encriptador.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InvalidKeyException ex) {
-            Logger.getLogger(Encriptador.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IllegalBlockSizeException ex) {
-            Logger.getLogger(Encriptador.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (BadPaddingException ex) {
-            Logger.getLogger(Encriptador.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | BadPaddingException | IllegalBlockSizeException | IOException ex) {
             Logger.getLogger(Encriptador.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
-        
+
 
     }
 

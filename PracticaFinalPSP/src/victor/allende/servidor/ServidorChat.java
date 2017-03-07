@@ -17,6 +17,7 @@ import java.net.SocketException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
+import victor.allende.cliente.SedeBarcelona;
 import victor.allende.hilo_servidor.HiloServidor;
 
 /**
@@ -108,9 +109,9 @@ public class ServidorChat extends JFrame implements ActionListener {
             ServidorChat pantalla = new ServidorChat();
             pantalla.setBounds(0, 0, 540, 400);
             pantalla.setVisible(true);
-            mensaje.setText("NUMERO DE CONEXIONES ACTUALES : " + CONEXIONES);
+            mensaje.setText("NUMERO DE CONEXIONES ACTUALES: " + CONEXIONES);
             while (CONEXIONES < MAXIMO) {
-                                
+
                 s = new Socket();
                 try {
                     s = servidor.accept();
@@ -121,6 +122,7 @@ public class ServidorChat extends JFrame implements ActionListener {
                 CONEXIONES++;
                 ACTUALES++;
                 HiloServidor hilo = new HiloServidor(s);
+                SedeBarcelona sedeb = new SedeBarcelona();
                 hilo.start();
 
             }

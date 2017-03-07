@@ -17,14 +17,13 @@ import javax.swing.JTextArea;
  */
 public class HiloCliente extends Thread {
 
-    MulticastSocket smulti;
-    InetAddress grupo;
-    DatagramPacket paquete;
-    String mensaje = "";
-    JTextArea areatexto;
-    
-    public HiloCliente( JTextArea areatexto) {
-        this.areatexto=areatexto;
+    private MulticastSocket smulti;
+    private DatagramPacket paquete;
+    private String mensaje = "";
+    private JTextArea areatexto;
+
+    public HiloCliente(JTextArea areatexto) {
+        this.areatexto = areatexto;
         this.mensaje = "";
     }
 
@@ -34,7 +33,7 @@ public class HiloCliente extends Thread {
         int puerto = 12345;
         try {
             smulti = new MulticastSocket(puerto);
-            grupo = InetAddress.getByName("225.0.0.0");
+            InetAddress grupo = InetAddress.getByName("225.0.0.0");
 
             // NOS VAMOS A UNIR AL GRUPO DE ORDENADORES
             smulti.joinGroup(grupo);
@@ -47,17 +46,11 @@ public class HiloCliente extends Thread {
             System.out.println("SE HA RECIBIDO DEL SERVIDOR MULTICAST EL MENSAJE " + mensaje.trim());
 
             String comprobar = areatexto.getText();
-            if(comprobar.equalsIgnoreCase("")){
-            
+            if (comprobar.equalsIgnoreCase("")) {
                 areatexto.setText("Mensaje de la sede central: " + mensaje + "\n");
-            }else{
+            } else {
                 areatexto.append("Mensaje de la sede central: " + mensaje + "\n");
             }
-            
-            
-            
-            
-            
 
             // ABANDONAMOS EL GRUPO DE ORDENADORES
             smulti.leaveGroup(grupo);
@@ -66,6 +59,5 @@ public class HiloCliente extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 }

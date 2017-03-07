@@ -38,6 +38,8 @@ public class SedeBarcelona extends JFrame implements ActionListener {
     JButton boton = new JButton("ENVIAR");
     JButton desconectar = new JButton("SALIR");
     JButton enviarObjeto = new JButton("CENTRAL");
+        HiloCliente h;
+    boolean primer = true;
 
     Boolean repetir = true;
 
@@ -161,8 +163,7 @@ public class SedeBarcelona extends JFrame implements ActionListener {
                 } else {
                     areatexto.append(texto);
                 }
-                HiloCliente h = new HiloCliente(areatexto);
-                h.start();
+                prueba();
 
             } catch (IOException e) {
                 JOptionPane.showMessageDialog(null, "IMPOSIBLE CONECTAR CON EL SERVIDOR\n"
@@ -176,6 +177,17 @@ public class SedeBarcelona extends JFrame implements ActionListener {
             System.exit(0);
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+    
+        public void prueba() {
+        if (primer) {
+            h = new HiloCliente(areatexto);
+            h.start();
+            primer = false;
+        } else if (!h.isAlive()) {
+            h = new HiloCliente(areatexto);
+            h.start();
         }
     }
 
@@ -199,8 +211,6 @@ public class SedeBarcelona extends JFrame implements ActionListener {
         cliente.setVisible(true);
         cliente.ejecutar();
 
-        SedeBarcelona sb = new SedeBarcelona();
-        sb.escrituraObjetoCuenta();
 
     }
 }
