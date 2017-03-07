@@ -44,7 +44,8 @@ public class RecibirObjetoCuenta {
                     + cuentaRecibida.getFecha()+ " CUENTA TOTAL: "+ cuentaRecibida.getCantidadTotal());
             
             ef.escribir(cuentaRecibida);
-            
+            ef.guardarCantidad(cuentaRecibida);
+            ef.imprimirCantidad();
             
             leerObjetos.close();
             escribirObjeto.close();
@@ -60,37 +61,5 @@ public class RecibirObjetoCuenta {
         }
         return cantidad;
     }
-    
-//    public void imprimir(){
-//        
-//        String ordenadorServidor = "localhost";
-//        int puerto = 6000;
-//        
-//        try {
-//            Socket cliente = new Socket(ordenadorServidor, puerto);
-//
-//            ObjectInputStream leerObjetos  = new ObjectInputStream(cliente.getInputStream());
-//            Cuenta cuentaRecibida = (Cuenta) leerObjetos.readObject();
-//       
-//
-//            ObjectOutputStream escribirObjeto = new ObjectOutputStream(cliente.getOutputStream());
-//
-//            escribirObjeto.writeObject(cuentaRecibida);
-//            
-//           ef.escribir(cuentaRecibida);
-//            
-//            leerObjetos.close();
-//            escribirObjeto.close();
-//            cliente.close();
-//            
-//        } catch (UnknownHostException e) {
-//            e.printStackTrace();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        } catch (ClassNotFoundException e) {
-//// TODO Auto-generated catch block
-//            e.printStackTrace();
-//        }
-//    
-//    }
+
 }

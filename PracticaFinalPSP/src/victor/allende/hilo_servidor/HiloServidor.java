@@ -48,7 +48,7 @@ public class HiloServidor extends Thread {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            ServidorChat.areaTexto.append(cadena + "\n");
+            ServidorChat.areaTexto.append(cadena+"\n");
             texto = ServidorChat.areaTexto.getText();
             EnviaMensajes(texto);
         }
@@ -63,6 +63,7 @@ public class HiloServidor extends Thread {
                 try {
                     fsalida = new DataOutputStream(sc.getOutputStream());
                     fsalida.writeUTF(texto);
+                    fsalida.flush();
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }  

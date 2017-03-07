@@ -8,7 +8,6 @@ package victor.allende.central_financiera;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.rmi.AccessException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -17,9 +16,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import victor.allende.editor_fichero.EditorFichero;
 import victor.allende.servidor.RMICalculadoraInterface;
 
 /**
@@ -31,9 +32,10 @@ public class RMICalculadoraCliente extends JFrame implements ActionListener{
     static JTextField mensaje = new JTextField();
     private JScrollPane scrollpane;
     static JTextArea areatexto;
-    JButton boton = new JButton("ENVIAR");
+    JButton boton = new JButton("aceptar objeto");
     JButton desconectar = new JButton("SALIR");
     RecibirObjetoCuenta roc = new RecibirObjetoCuenta();
+    EditorFichero ef = new EditorFichero();
     
     public RMICalculadoraCliente() {
         super("CENTRAL FINANCIERA: ");
@@ -62,7 +64,6 @@ public class RMICalculadoraCliente extends JFrame implements ActionListener{
             String texto = " >> " + mensaje.getText();
             mensaje.setText(" ");
             aceptarObjeto();
-//            roc.imprimir();
         }
         if (e.getSource() == desconectar) {
             
@@ -73,7 +74,6 @@ public class RMICalculadoraCliente extends JFrame implements ActionListener{
         
         Registry reg = null;
         int informecantidad=0;
-        
         
         RMICalculadoraInterface calculadora = null;
         System.out.println("LOCALIZANDO REGISTRO DE OBJETOS REMOTOS");
@@ -90,18 +90,16 @@ public class RMICalculadoraCliente extends JFrame implements ActionListener{
         
         if (calculadora != null) {
             System.out.println("REALIZANDO OPERACIONES CON EL OBJETO REMOTO");
-            System.out.println("Aqui");
             try {
                 informecantidad = roc.recibirObjeto();
-                
-//                roc.imprimir();
-                
+     
                 String m = calculadora.valorarVentas(informecantidad);
                 System.out.println("La venta es:  "+informecantidad+ "" + m);//dato tiene que venir de las sedes
+                JOptionPane.showMessageDialog(null,"La venta es:   "+informecantidad +" "+ m);
+                int total = ef.imprimirCantidad();            
+                JOptionPane.showMessageDialog(null,"La suma total es:   "+total);
                 
-
             } catch (RemoteException e) {
-// TODO Auto-generated catch block
                 e.printStackTrace();
             } catch (IOException ex) {
                 Logger.getLogger(RMICalculadoraCliente.class.getName()).log(Level.SEVERE, null, ex);
@@ -109,11 +107,11 @@ public class RMICalculadoraCliente extends JFrame implements ActionListener{
         }
     
     }
+   
 
     public static void main(String[] args) {
         RMICalculadoraCliente pantalla = new RMICalculadoraCliente();
         pantalla.setBounds(200, 100, 540, 400);
         pantalla.setVisible(true);
-//        RMICalculadoraCliente rmi = new RMICalculadoraCliente();
     }
 }

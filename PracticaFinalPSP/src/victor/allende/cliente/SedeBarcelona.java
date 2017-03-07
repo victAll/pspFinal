@@ -19,18 +19,14 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
+import javax.swing.*;
 
 /**
  *
  * @author allen
  */
-public class SedeMadrid extends JFrame implements ActionListener{
+public class SedeBarcelona extends JFrame implements ActionListener {
+
     private static final long serialVersionUID = 1L;
     Socket conector = null;
     DataInputStream fentrada;
@@ -39,12 +35,17 @@ public class SedeMadrid extends JFrame implements ActionListener{
     static JTextField mensaje = new JTextField();
     private JScrollPane scrollpane;
     static JTextArea areatexto;
-    JButton boton = new JButton("ACEPTAR");
+    JButton boton = new JButton("ENVIAR");
     JButton desconectar = new JButton("SALIR");
     JButton enviarObjeto = new JButton("CENTRAL");
+
     Boolean repetir = true;
 
-    public SedeMadrid(Socket s, String nombre) {
+    public SedeBarcelona() {
+    }
+
+    public SedeBarcelona(Socket s, String nombre) {
+
         super("CONEXION DEL CLIENTE DEL CHAT: " + nombre);
         setLayout(null);
         mensaje.setBounds(10, 10, 400, 30);
@@ -76,44 +77,37 @@ public class SedeMadrid extends JFrame implements ActionListener{
             e.printStackTrace();
         }
     }
-    public SedeMadrid(){
-    }
 
-    public  void escrituraObjetoCuenta() {
+    public void escrituraObjetoCuenta() {
 
         int numeropuerto = 6000;
         // PREPARACION DEL OBJETO Y ENVIO
         Cuenta cuenta = new Cuenta();
-        String nombre = "Sede Madrid";
+        String nombre = "Sede Barcelona";
         Date fecha = new Date();
         int cantidadTotal;
         String cadenaFecha;
-        
+
         cuenta.setNombreSede(nombre);
         SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
         cadenaFecha = formato.format(fecha);
         cuenta.setFecha(cadenaFecha);
-        cantidadTotal = (int) (Math.random() *(20000-200+1)+200);
+        cantidadTotal = (int) (Math.random() * (20000 - 200 + 1) + 200);
         cuenta.setCantidadTotal(cantidadTotal);
         System.out.println("aqui se llena el objeto");
         try {
             ServerSocket servidor;
             servidor = new ServerSocket(numeropuerto);
-            System.out.println("ESPERANDO A LA CENTRAL FINANCIERA");
+            System.out.println("ESPERANDO A LA CENTRAL FINNCIERA");
             Socket cliente = servidor.accept();
             ObjectOutputStream escrituraObjeto = new ObjectOutputStream(cliente.getOutputStream());
             escrituraObjeto.writeObject(cuenta);
-            
+
             Encriptador encriptador = new Encriptador();
             encriptador.encriptar(escrituraObjeto);
-            
+
             ObjectInputStream lecturaObjetos = new ObjectInputStream(cliente.getInputStream());
             Cuenta cuentaRecibida = (Cuenta) lecturaObjetos.readObject();
-            
-           
-
-            
-            
             lecturaObjetos.close();
             escrituraObjeto.close();
             cliente.close();
@@ -122,8 +116,7 @@ public class SedeMadrid extends JFrame implements ActionListener{
             Logger.getLogger(SedeValencia.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(SedeValencia.class.getName()).log(Level.SEVERE, null, ex);
-        }         
-
+        }
     }
 
     @Override
@@ -138,10 +131,10 @@ public class SedeMadrid extends JFrame implements ActionListener{
                 e1.printStackTrace();
             }
         }
-         if (e.getSource() == enviarObjeto) {
-            
+        if (e.getSource() == enviarObjeto) {
+
             escrituraObjetoCuenta();
-            
+
         }
         if (e.getSource() == desconectar) {
             String texto = " <<< ABANDONA EL CHAT " + nombre;
@@ -161,16 +154,16 @@ public class SedeMadrid extends JFrame implements ActionListener{
         while (repetir) {
             comprobar = areatexto.getText();
             System.out.println("comprobar: " + comprobar);
-            try {                
+            try {
                 texto = fentrada.readUTF();
-                if (comprobar.equalsIgnoreCase("")) {                   
-                    areatexto.setText(texto);                  
+                if (comprobar.equalsIgnoreCase("")) {
+                    areatexto.setText(texto);
                 } else {
-                    areatexto.append(texto);         
-                }            
+                    areatexto.append(texto);
+                }
                 HiloCliente h = new HiloCliente(areatexto);
                 h.start();
-                
+
             } catch (IOException e) {
                 JOptionPane.showMessageDialog(null, "IMPOSIBLE CONECTAR CON EL SERVIDOR\n"
                         + e.getMessage(), "<< mensaje de error >>", JOptionPane.ERROR_MESSAGE);
@@ -182,7 +175,6 @@ public class SedeMadrid extends JFrame implements ActionListener{
             conector.close();
             System.exit(0);
         } catch (IOException e) {
-// TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
@@ -190,7 +182,7 @@ public class SedeMadrid extends JFrame implements ActionListener{
     public static void main(String[] args) {
 
         int puerto = 44444;
-        String nombre ="Madrid";
+        String nombre = "Barcelona";
         Socket s = null;
         try {
             s = new Socket("localhost", puerto);
@@ -202,14 +194,13 @@ public class SedeMadrid extends JFrame implements ActionListener{
             System.exit(0);
             e.printStackTrace();
         }
-            SedeMadrid cliente = new SedeMadrid(s, nombre);
-            cliente.setBounds(0, 0, 540, 400);
-            cliente.setVisible(true);
-            cliente.ejecutar();
+        SedeBarcelona cliente = new SedeBarcelona(s, nombre);
+        cliente.setBounds(0, 0, 540, 400);
+        cliente.setVisible(true);
+        cliente.ejecutar();
 
-
-         SedeMadrid sm = new SedeMadrid();
-         sm.escrituraObjetoCuenta();
+        SedeBarcelona sb = new SedeBarcelona();
+        sb.escrituraObjetoCuenta();
 
     }
 }

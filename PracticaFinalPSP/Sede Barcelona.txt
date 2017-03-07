@@ -1,0 +1,12 @@
+Nombre sede: Sede Barcelona
+fecha: 2017-03-07
+Cantidad total: 2499 €
+Nombre sede: Sede Barcelona
+fecha: 2017-03-07
+Cantidad total: 1358 €
+Nombre sede: Sede Barcelona
+fecha: 2017-03-07
+Cantidad total: 17006 €
+Nombre sede: Sede Barcelona
+fecha: 2017-03-07
+Cantidad total: 2411 €

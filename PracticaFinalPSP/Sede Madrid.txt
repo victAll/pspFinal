@@ -1,0 +1,12 @@
+Nombre sede: Sede Madrid
+fecha: 2017-03-07
+Cantidad total: 1370 €
+Nombre sede: Sede Madrid
+fecha: 2017-03-07
+Cantidad total: 11835 €
+Nombre sede: Sede Madrid
+fecha: 2017-03-07
+Cantidad total: 2901 €
+Nombre sede: Sede Madrid
+fecha: 2017-03-07
+Cantidad total: 7480 €

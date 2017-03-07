@@ -30,7 +30,7 @@ public class ServidorChat extends JFrame implements ActionListener {
     private static final int PUERTO = 44444;
     public static int CONEXIONES = 0;
     public static int ACTUALES = 0;
-    private static int MAXIMO = 10;
+    private static int MAXIMO = 4;
     public static JTextField mensaje = new JTextField("");
     public static JTextField mensaje2 = new JTextField("");
     static JTextField mensajeSedes = new JTextField();
@@ -38,7 +38,7 @@ public class ServidorChat extends JFrame implements ActionListener {
     public static JTextArea areaTexto;
     private JButton boton = new JButton("ENVIAR");
     private JButton salir = new JButton("SALIR");
-    private JButton enviar = new JButton("ENVIAR MENSAJE");
+    private JButton enviar = new JButton("MENSAJE");
 
     public static Socket[] tabla = new Socket[10];
     //para mandar mensajes
@@ -63,9 +63,9 @@ public class ServidorChat extends JFrame implements ActionListener {
         scrollpanel = new JScrollPane(areaTexto);
         scrollpanel.setBounds(10, 70, 400, 300);
         add(scrollpanel);
-        boton.setBounds(420, 10, 100, 30);
-        boton.addActionListener(this);
-        add(boton);
+//        boton.setBounds(420, 10, 100, 30);
+//        boton.addActionListener(this);
+//        add(boton);
         salir.setBounds(420, 50, 100, 30);
         salir.addActionListener(this);
         add(salir);
@@ -80,22 +80,11 @@ public class ServidorChat extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == boton) {
-            String texto = " >> " + mensaje.getText();
-            mensaje.setText(" ");
-            try {
-                fsalida.writeUTF(texto);
-                fsalida.writeUTF("*");
-                repetir = false;
 
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
-        }
         if (e.getSource() == enviar) {
 
             multicastServidor.envioMulticast(mensajeSedes);
-
+            mensajeSedes.setText("");
         }
         if (e.getSource() == salir) {
             try {
@@ -120,8 +109,8 @@ public class ServidorChat extends JFrame implements ActionListener {
             pantalla.setBounds(0, 0, 540, 400);
             pantalla.setVisible(true);
             mensaje.setText("NUMERO DE CONEXIONES ACTUALES : " + CONEXIONES);
-            // SE ADMITEN HASTA 10 CONEXIONES
             while (CONEXIONES < MAXIMO) {
+                                
                 s = new Socket();
                 try {
                     s = servidor.accept();

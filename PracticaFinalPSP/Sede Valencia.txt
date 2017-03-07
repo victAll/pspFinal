@@ -1,0 +1,57 @@
+Nombre sede: Sede Valencia
+fecha: 2017-03-07
+Cantidad total: 8873 €
+Nombre sede: Sede Valencia
+fecha: 2017-03-07
+Cantidad total: 9374 €
+Nombre sede: Sede Valencia
+fecha: 2017-03-07
+Cantidad total: 5972 €
+Nombre sede: Sede Valencia
+fecha: 2017-03-07
+Cantidad total: 10994 €
+Nombre sede: Sede Valencia
+fecha: 2017-03-07
+Cantidad total: 6397 €
+Nombre sede: Sede Valencia
+fecha: 2017-03-07
+Cantidad total: 14902 €
+Nombre sede: Sede Valencia
+fecha: 2017-03-07
+Cantidad total: 1078 €
+Nombre sede: Sede Valencia
+fecha: 2017-03-07
+Cantidad total: 9575 €
+Nombre sede: Sede Valencia
+fecha: 2017-03-07
+Cantidad total: 5433 €
+Nombre sede: Sede Valencia
+fecha: 2017-03-07
+Cantidad total: 4698 €
+Nombre sede: Sede Valencia
+fecha: 2017-03-07
+Cantidad total: 8415 €
+Nombre sede: Sede Valencia
+fecha: 2017-03-07
+Cantidad total: 5555 €
+Nombre sede: Sede Valencia
+fecha: 2017-03-07
+Cantidad total: 5837 €
+Nombre sede: Sede Valencia
+fecha: 2017-03-07
+Cantidad total: 4290 €
+Nombre sede: Sede Valencia
+fecha: 2017-03-07
+Cantidad total: 5835 €
+Nombre sede: Sede Valencia
+fecha: 2017-03-07
+Cantidad total: 4060 €
+Nombre sede: Sede Valencia
+fecha: 2017-03-07
+Cantidad total: 5902 €
+Nombre sede: Sede Valencia
+fecha: 2017-03-07
+Cantidad total: 4079 €
+Nombre sede: Sede Valencia
+fecha: 2017-03-07
+Cantidad total: 7027 €
