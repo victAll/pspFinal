@@ -186,16 +186,13 @@ public class Sedes extends JFrame implements ActionListener {
                 e.printStackTrace();
             }
         }
-
         try {
-
             conector.close();
             System.exit(0);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
     public void prueba() {
         if (primer) {
             h = new HiloCliente(areatexto);

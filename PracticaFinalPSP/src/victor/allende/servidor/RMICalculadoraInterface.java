@@ -14,5 +14,5 @@ import java.rmi.RemoteException;
  */
 public interface RMICalculadoraInterface extends Remote{
     
-    public String valorarVentas(int venta) throws RemoteException;  
+    public String valorarVentas(int venta, int menor, int mayor) throws RemoteException;  
 }

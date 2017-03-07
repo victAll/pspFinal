@@ -47,15 +47,15 @@ public class RMICalculadoraServidor implements RMICalculadoraInterface {
         }  
     }
     
-     @Override
-    public String valorarVentas(int venta) throws RemoteException {
+   @Override
+    public String valorarVentas(int venta, int menor, int mayor) throws RemoteException {
         String mensaje = "";
 
-        if (venta <= 1000) {
+        if (venta <= menor) {
             mensaje = "Eres un mal vendedor";
-        } else if (venta > 1000 && venta <= 10000) {
+        } else if (venta > menor && venta <= mayor) {
             mensaje = "Has vendido lo normal, superate!";
-        } else if (venta > 10000) {
+        } else if (venta > mayor) {
             mensaje = "Eres una máquina sigue asi!!!";
         }
 

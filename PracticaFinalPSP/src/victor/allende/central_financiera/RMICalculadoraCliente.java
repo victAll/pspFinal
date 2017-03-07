@@ -27,7 +27,7 @@ import victor.allende.servidor.RMICalculadoraInterface;
  *
  * @author allen
  */
-public class RMICalculadoraCliente extends JFrame implements ActionListener{
+public class RMICalculadoraCliente extends JFrame implements ActionListener {
 
     static JTextField mensaje = new JTextField();
     private JScrollPane scrollpane;
@@ -36,7 +36,7 @@ public class RMICalculadoraCliente extends JFrame implements ActionListener{
     JButton desconectar = new JButton("SALIR");
     RecibirObjetoCuenta roc = new RecibirObjetoCuenta();
     EditorFichero ef = new EditorFichero();
-    
+
     public RMICalculadoraCliente() {
         super("CENTRAL FINANCIERA: ");
         setLayout(null);
@@ -56,8 +56,7 @@ public class RMICalculadoraCliente extends JFrame implements ActionListener{
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
     }
-    
-    
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == boton) {
@@ -66,48 +65,54 @@ public class RMICalculadoraCliente extends JFrame implements ActionListener{
             aceptarObjeto();
         }
         if (e.getSource() == desconectar) {
-            
+
             System.exit(0);
         }
     }
-    public void aceptarObjeto(){
-        
+
+    public void aceptarObjeto() {
+
         Registry reg = null;
-        int informecantidad=0;
-        
+        int informecantidad = 0;
+
         RMICalculadoraInterface calculadora = null;
         System.out.println("LOCALIZANDO REGISTRO DE OBJETOS REMOTOS");
         try {
             reg = LocateRegistry.getRegistry("localhost", 5555);
             System.out.println("OBTENIENDO EL STUB DEL OBJETO REMOTO");
             calculadora = (RMICalculadoraInterface) reg.lookup("CALCULADORA");
-            
+
         } catch (RemoteException e) {
             e.printStackTrace();
         } catch (NotBoundException ex) {
             Logger.getLogger(RMICalculadoraCliente.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         if (calculadora != null) {
             System.out.println("REALIZANDO OPERACIONES CON EL OBJETO REMOTO");
             try {
                 informecantidad = roc.recibirObjeto();
-     
-                String m = calculadora.valorarVentas(informecantidad);
-                System.out.println("La venta es:  "+informecantidad+ "" + m);//dato tiene que venir de las sedes
-                JOptionPane.showMessageDialog(null,"La venta es:   "+informecantidad +" "+ m);
-                int total = ef.imprimirCantidad();            
-                JOptionPane.showMessageDialog(null,"La suma total es:   "+total);
-                
+                String menor = JOptionPane.showInputDialog("ingrese la cantidad menor");
+                String mayor = JOptionPane.showInputDialog("ingrese la cantidad mayor");
+                int _menor = Integer.parseInt(menor);
+                int _mayor = Integer.parseInt(mayor);
+                //total del dia de todas las sedes
+                int total = ef.imprimirCantidad();
+                //llamada al metodo rmi
+                String m = calculadora.valorarVentas(total,_menor, _mayor);
+                JOptionPane.showMessageDialog(null, "La venta es:   " + informecantidad + " " + m);
+                JOptionPane.showMessageDialog(null, "La suma total es:   " + total);
+
             } catch (RemoteException e) {
                 e.printStackTrace();
             } catch (IOException ex) {
                 Logger.getLogger(RMICalculadoraCliente.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-    
+
     }
-   
+
+    
 
     public static void main(String[] args) {
         RMICalculadoraCliente pantalla = new RMICalculadoraCliente();
